@@ -1,0 +1,19 @@
+div, span {
+	box-sizing: border-box;
+}
+
+.timer, .scores {
+	width: 15%;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.problemArea {
+	width: 68%;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.timeRemaining {
+	font-size: 50px;
+}
