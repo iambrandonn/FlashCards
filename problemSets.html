@@ -1,7 +1,5 @@
 {{#each problemSets}}
-	<li {{#if alternate}}class="alternate"{{/if}}>
-		<input name="problemSet" type="radio" value="{{name}}" {{#if checked}}checked{{/if}} />
+	<li class="problemSet" name="{{name}}">
 		{{displayName}}
-		<span class="highScore">{{highScore}}</span>
 	</li>
 {{/each}}

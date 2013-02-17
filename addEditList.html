@@ -7,27 +7,30 @@
 	</head>
 	<body>
 		Name
-		<input type="text" id="name" />
+		<input class="problemSet" type="text" id="name" placeholder="The name of this set of questions" />
 
-		key value pairs
-		<div class="header">
-			<div class="columnHeading"></div>
-			<div class="columnHeading"></div>
-		</div>
-		<div class="entry">
-			<div class="key"></div>
-			<div class="value"></div>
-		</div>
-		<div class="entry">
-			<div class="key"></div>
-			<div class="value"></div>
-		</div>
-		<div>
-			<button id="add">Add</button>
+		<div class="questions">
+			<div class="header">
+				<span class="columnHeading">Question</span>
+				<span class="columnHeading">Answer</span>
+			</div>
+			<div class="question">
+				<input type="text" class="key" placeholder="4+4" />
+				<input type="text" class="value" placeholder="8" />
+			</div>
+<!-- 			<div class="question">
+				<input type="text" class="key" />
+				<input type="text" class="value" />
+			</div> -->
 		</div>
 
-		<button id="save">Save</button>
+		<div class="buttons">
+			<button id="save">Save</button>
+		</div>
 
+		<script src="handlebars-runtime.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="question.js"></script>
 		<script src="addEdit.js"></script>
 	</body>
 </html>

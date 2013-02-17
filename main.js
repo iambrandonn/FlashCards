@@ -3,6 +3,7 @@ var currentTime = 60;
 var timer;
 var currentProblem;
 var currentScore = 0;
+var highScore = 0;
 var timerCtx = document.getElementById('cnvTimer').getContext('2d');
 var timerCanvasHeight = document.getElementById('cnvTimer').height;
 var beginTime;
@@ -202,19 +203,14 @@ var spanishWords = [
 	{key:'maestro', value:'teacher'}
 ];
 
-function generateSpanishQuestion() {
-	var index = getRandomInteger(spanishWords.length) - 1;
-	return spanishWords[index];
+function getQuestionFromList(theList) {
+	var index = getRandomInteger(theList.length) - 1;
+	return theList[index];
 }
 
-function generateCapitalsQuestion() {
-	var index = getRandomInteger(capitals.length) - 1;
-	return capitals[index];
-}
-
-function generateChemicalSymbolQuestion() {
-	var index = getRandomInteger(chemSymbols.length) - 1;
-	return chemSymbols[index];
+function generateCustomQuestion() {
+	var problems = JSON.parse(localStorage.getItem(selectedProblemSet));
+	return getQuestionFromList(problems);
 }
 
 function generateAdditionProblem() {
@@ -283,15 +279,19 @@ function showNextProblem() {
 			problemText = currentProblem.firstNumber + ' / ' + currentProblem.secondNumber;
 			break;
 		case 'builtin-capitals':
-			currentProblem = generateCapitalsQuestion();
+			currentProblem = getQuestionFromList(capitals);
 			problemText = currentProblem.key;
 			break;
 		case 'builtin-chemSymbols':
-			currentProblem = generateChemicalSymbolQuestion();
+			currentProblem = getQuestionFromList(chemSymbols);
 			problemText = currentProblem.key;
 			break;
 		case 'builtin-spanish':
-			currentProblem = generateSpanishQuestion();
+			currentProblem = getQuestionFromList(spanishWords);
+			problemText = currentProblem.key;
+			break;
+		default:
+			currentProblem = generateCustomQuestion();
 			problemText = currentProblem.key;
 			break;
 	}
@@ -330,8 +330,6 @@ function startSpeechRecognition() {
 			timeRemaining.textContent = timeToShow;
 		}, 1000);
 
-		showIHeard();
-
 		// Show the first question
 		showNextProblem();
 	};
@@ -351,6 +349,12 @@ function startSpeechRecognition() {
 		if (previousHigh < currentScore) {
 			setHighScoreFor(selectedProblemSet, currentScore);
 			renderProblemSets();
+			document.getElementById('highScoreValue').innerHTML = currentScore;
+		}
+
+		var highlighted = document.getElementsByClassName('highlight');
+		for (var i = 0; i < highlighted.length; i++) {
+			highlighted[i].classList.remove('highlight');
 		}
 	};
 
@@ -379,26 +383,24 @@ function checkAnswer(guess) {
 		answer = answer.toLowerCase();
 	}
 
-	if (answer == trimmedGuess || trimmedGuess === 'skip') {
+
+	if (trimmedGuess.indexOf('skip') >= 0 || trimmedGuess.indexOf(answer) >= 0) {
 		showNextProblem();
 	}
 
-	if (answer == trimmedGuess) {
+	if (trimmedGuess.indexOf(answer) >= 0) {
 		currentScore++;
-		document.getElementById('currentScoreValue').textContent = currentScore;
+		var scoreElement = document.getElementById('currentScoreValue');
+		scoreElement.textContent = currentScore;
+
+		if (currentScore > highScore) {
+			scoreElement.classList.add('highlight');
+		}
 	}
 }
 
 function setIHeardText(textToDisplay) {
 	document.getElementById('iHeardText').textContent = textToDisplay;
-}
-
-function hideIHeard() {
-	document.getElementsByClassName('iHeard')[0].classList.add('hidden');
-}
-
-function showIHeard() {
-	document.getElementsByClassName('iHeard')[0].classList.remove('hidden');
 }
 
 function paintTimer(percent) {
@@ -435,7 +437,7 @@ function updateTimer() {
 function getHighScoreFor(problemSet) {
 	if (localStorage) {
 		var score = localStorage.getItem(problemSet + 'HighScore');
-		if (score >= 0) {
+		if (score > 0) {
 			return score;
 		}
 		else {
@@ -453,66 +455,90 @@ function setHighScoreFor(problemSet, score) {
 }
 
 function renderProblemSets() {
+	var problemSets = [
+		{
+			name: 'builtin-addition',
+			displayName: 'Addition',
+			highScore: getHighScoreFor('builtin-addition'),
+			checked: selectedProblemSet === 'builtin-addition'
+		},
+		{
+			name: 'builtin-subtraction',
+			displayName: 'Subtraction',
+			highScore: getHighScoreFor('builtin-subtraction'),
+			checked: selectedProblemSet === 'builtin-subtraction'
+		},
+		{
+			name: 'builtin-multiplication',
+			displayName: 'Multiplication',
+			highScore: getHighScoreFor('builtin-multiplication'),
+			checked: selectedProblemSet === 'builtin-multiplication'
+		},
+		{
+			name: 'builtin-division',
+			displayName: 'Division',
+			highScore: getHighScoreFor('builtin-division'),
+			checked: selectedProblemSet === 'builtin-division'
+		},
+		{
+			name: 'builtin-capitals',
+			displayName: 'US State Capitals',
+			highScore: getHighScoreFor('builtin-capitals'),
+			checked: selectedProblemSet === 'builtin-capitals'
+		},
+		{
+			name: 'builtin-chemSymbols',
+			displayName: 'Chemical Symbols',
+			highScore: getHighScoreFor('builtin-chemSymbols'),
+			checked: selectedProblemSet === 'builtin-chemSymbols'
+		},
+		{
+			name: 'builtin-spanish',
+			displayName: 'Spanish Vocabulary',
+			highScore: getHighScoreFor('builtin-spanish'),
+			checked: selectedProblemSet === 'builtin-spanish'
+		}
+	];
+
+	addCustomProblemSets(problemSets);
 	var problemSetsHtml = Handlebars.templates['problemSets.html']({
-		problemSets: [
-			{
-				name: 'builtin-addition',
-				displayName: 'Addition',
-				highScore: getHighScoreFor('builtin-addition'),
-				checked: selectedProblemSet === 'builtin-addition'
-			},
-			{
-				name: 'builtin-subtraction',
-				displayName: 'Subtraction',
-				highScore: getHighScoreFor('builtin-subtraction'),
-				checked: selectedProblemSet === 'builtin-subtraction',
-				alternate: true
-			},
-			{
-				name: 'builtin-multiplication',
-				displayName: 'Multiplication',
-				highScore: getHighScoreFor('builtin-multiplication'),
-				checked: selectedProblemSet === 'builtin-multiplication'
-			},
-			{
-				name: 'builtin-division',
-				displayName: 'Division',
-				highScore: getHighScoreFor('builtin-division'),
-				checked: selectedProblemSet === 'builtin-division',
-				alternate: true
-			},
-			{
-				name: 'builtin-capitals',
-				displayName: 'US State Capitals',
-				highScore: getHighScoreFor('builtin-capitals'),
-				checked: selectedProblemSet === 'builtin-capitals'
-			},
-			{
-				name: 'builtin-chemSymbols',
-				displayName: 'Chemical Symbols',
-				highScore: getHighScoreFor('builtin-chemSymbols'),
-				checked: selectedProblemSet === 'builtin-chemSymbols',
-				alternate: true
-			},
-			{
-				name: 'builtin-spanish',
-				displayName: 'Spanish Vocabulary',
-				highScore: getHighScoreFor('builtin-spanish'),
-				checked: selectedProblemSet === 'builtin-spanish'
-			}
-		]
+		problemSets: problemSets
 	});
 
-	document.getElementsByClassName('problemSets')[0].innerHTML = problemSetsHtml;
+	document.getElementsByClassName('problemSetList')[0].innerHTML = problemSetsHtml;
 
-	var problemSetRadios = document.getElementsByName('problemSet');
-	for (var i = 0; i < problemSetRadios.length; i++) {
-		problemSetRadios[i].addEventListener('click', problemSetChanged);
+	var problemSetElements = document.getElementsByClassName('problemSet');
+	for (var i = 0; i < problemSetElements.length; i++) {
+		problemSetElements[i].addEventListener('click', problemSetChanged);
+	}
+}
+
+function addCustomProblemSets(arrayToAddTo) {
+	var problemsAsString = localStorage.getItem('problemSets');
+	if (problemsAsString) {
+		var problemSetArray = JSON.parse(problemsAsString);
+		problemSetArray.forEach(function(problemSetName) {
+			arrayToAddTo.push({
+				name: problemSetName,
+				displayName: problemSetName,
+				highScore: getHighScoreFor(problemSetName),
+				checked: selectedProblemSet === problemSetName
+			});
+		});
 	}
 }
 
 function problemSetChanged() {
-	selectedProblemSet = this.value;
+	var previouslySelected = document.getElementsByClassName('selected');
+	for (var i = 0; i < previouslySelected.length; i++) {
+		previouslySelected[i].classList.remove('selected');
+	}
+	this.classList.add('selected');
+
+	selectedProblemSet = this.attributes['name'].value;
+
+	highScore = getHighScoreFor(selectedProblemSet);
+	document.getElementById('highScoreValue').innerHTML = highScore;
 }
 
 renderProblemSets();
@@ -521,6 +547,12 @@ paintTimer(0.99999);
 var startButton = document.getElementsByClassName('startButton')[0];
 startButton.addEventListener('click', function() {
 	startSpeechRecognition();
+
+	document.getElementsByClassName('scores')[0].classList.remove('hidden');
+	document.getElementsByClassName('card')[0].classList.remove('hidden');
+	document.getElementsByClassName('iHeard')[0].classList.remove('hidden');
+
+	document.getElementsByClassName('instructions')[0].classList.add('hidden');
 });
 
 var doneSound = new Audio('done.mp3');

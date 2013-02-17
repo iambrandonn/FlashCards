@@ -1,0 +1,32 @@
+.problemSet {
+	width: 250px;
+	padding: 4px;
+}
+
+.questions {
+	display: table;
+	width: 500px;
+}
+
+.header, .question {
+	display: table-row;
+	text-align: center;
+}
+
+.key, .value, .columnHeading {
+	display: inline-block;
+	width: 48%;
+	margin: 5px;
+}
+
+.key, .value {
+	padding: 4px;
+}
+
+#save {
+
+}
+
+.buttons {
+	width: 500px;
+}

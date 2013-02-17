@@ -6,44 +6,54 @@
 		<link href="main.css" rel="stylesheet" />
 	</head>
 	<body>
-		<div class="instructions">Please use a better browser</div>
+		<div class="warnings">Please use a better browser</div>
 		<div class="content">
-			<span class="scores">
-				<div class="currentScore">
-					Current Score: <span id="currentScoreValue"></span>
-				</div>
+			<span class="navigation">
+				<div class="component">
+					<ul class="problemSetList">
+					</ul>
 
-				<div class="problemSetHeader">
-					<span class="problemSetName">Name</span>
-					<span class="highScore">High Score</span>
+					<div class="addMoreSection">
+						<a href="addEditList.html">Add more...</a>
+					</div>
 				</div>
-
-				<ul class="problemSets">
-				</ul>
+				<div class="component">
+					<canvas id="cnvTimer" width="150" height="150"></canvas>
+					<div class="timeRemaining">1:00</div>
+					<div class="controls"><button class="startButton">Start</button></div>
+				</div>
 			</span>
 			<span class="problemArea">
-				<div class="card">
+				<div class="component instructions">
+					You have 60 seconds.  Click "Start" and the browser will ask you for permission to use the microphone.  Once cards start appearing say the answer out loud.  You can choose from the default categories on the left or create your own list by clicking "Add more..."
+				</div>
+
+				<div class="component scores hidden">
+					<span class="currentScore">
+						Score: <span id="currentScoreValue"></span>
+					</span>
+					<span class="highScore">
+						High Score: <span id="highScoreValue"></span>
+					</span>
+				</div>
+
+				<div class="card component hidden">
 					<div class="problem"></div>
 				</div>
-				<div class="iHeard hidden">
-					<span class="iHeardLabel">I heard you say:</span> <span id="iHeardText"></span>
-				</div>
-
-				<div class="skipHint">
-					You can say "skip" if you get stuck...
-				</div>
-
-				<div class="footer">
-					<div>Created by Brandon Nicholls</div>
-					<a href="https://github.com/iambrandonn/FlashCards">Github Project</a>
-					<a href="http://tripleequals.blogspot.com/2012/09/webcam-swiper.html">Blo!!!!!!!!g Post</a>
+				<div class="iHeard component hidden">
+					<span class="iHeardLabel">I think I heard you say:</span> <span id="iHeardText"></span>
+					<div class="skipHint">
+						If you get stuck, say "skip"...
+					</div>
 				</div>
 			</span>
-			<span class="timer">
-				<canvas id="cnvTimer" width="150" height="150"></canvas>
-				<div class="timeRemaining">1:00</div>
-				<div class="controls"><button class="startButton">Start</button></div>
-			</span>
+		</div>
+
+		<div class="footer">
+			<div>Created by Brandon Nicholls</div>
+			<a href="https://github.com/iambrandonn/FlashCards">Github Project</a>
+			<a href="http://tripleequals.blogspot.com/2012/09/webcam-swiper.html">Blo!!!!!!!!g Post</a>
+			<a href="https://twitter.com/NichollsBrandon">@NichollsBrandon</a>
 		</div>
 
 		<script src="handlebars-runtime.js"></script>
