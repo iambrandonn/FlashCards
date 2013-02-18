@@ -3,14 +3,15 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 		<title>Flash Cards</title>
-		<link href="main.css" rel="stylesheet" />
+		<link href="common.css" rel="stylesheet" />
+		<link href="index.css" rel="stylesheet" />
 	</head>
 	<body>
-		<div class="warnings">Please use a better browser</div>
+		<div class="warnings"></div>
 		<div class="content">
 			<span class="navigation">
 				<div class="component">
-					<ul class="problemSetList">
+					<ul class="categoryList">
 					</ul>
 
 					<div class="addMoreSection">
@@ -20,12 +21,14 @@
 				<div class="component">
 					<canvas id="cnvTimer" width="150" height="150"></canvas>
 					<div class="timeRemaining">1:00</div>
-					<div class="controls"><button class="startButton">Start</button></div>
+					<div class="controls">
+						<button title="Please select a category" class="startButton disabled">Start</button>
+					</div>
 				</div>
 			</span>
 			<span class="problemArea">
 				<div class="component instructions">
-					You have 60 seconds.  Click "Start" and the browser will ask you for permission to use the microphone.  Once cards start appearing say the answer out loud.  You can choose from the default categories on the left or create your own list by clicking "Add more..."
+					You have 60 seconds.  Click "Start" and the browser will ask you for permission to use the microphone.  When cards start appearing say the answer out loud.  You can choose from the default categories on the left or create your own list by clicking "Add more..."
 				</div>
 
 				<div class="component scores hidden">
@@ -57,7 +60,9 @@
 		</div>
 
 		<script src="handlebars-runtime.js"></script>
-		<script src="problemSets.js"></script>
+		<script src="categories.js"></script>
+		<script src="common.js"></script>
+		<script src="sampleProblems.js"></script>
 		<script src="main.js"></script>
 	</body>
 </html>

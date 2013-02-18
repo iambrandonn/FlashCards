@@ -3,34 +3,58 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 		<title>Add or edit a list</title>
+		<link href="common.css" rel="stylesheet" />
 		<link href="addEdit.css" rel="stylesheet" />
 	</head>
 	<body>
-		Name
-		<input class="problemSet" type="text" id="name" placeholder="The name of this set of questions" />
+		<div class="warnings"></div>
+		<div class="content">
+			<span class="navigation">
+				<div class="component">
+					<ul class="categoryList">
+					</ul>
 
-		<div class="questions">
-			<div class="header">
-				<span class="columnHeading">Question</span>
-				<span class="columnHeading">Answer</span>
-			</div>
-			<div class="question">
-				<input type="text" class="key" placeholder="4+4" />
-				<input type="text" class="value" placeholder="8" />
-			</div>
-<!-- 			<div class="question">
-				<input type="text" class="key" />
-				<input type="text" class="value" />
-			</div> -->
+					<a href="addEditList.html" class="newLink">Add a new category</a>
+					<a class="backLink" href="index.html">Back</a>
+				</div>
+			</span>
+			<span class="categoryDetails">
+				<div class="component">
+					<div class="nameSection">
+						<input class="categoryName" type="text" id="name" placeholder="Type category name here" />
+					</div>
+
+					<div class="questions">
+						<div class="header">
+							<span class="columnHeading">Question</span>
+							<span class="columnHeading">Answer</span>
+						</div>
+						<div class="question">
+							<input type="text" class="key" placeholder="4+4" />
+							<input type="text" class="value" placeholder="8" />
+						</div>
+					</div>
+
+					<div class="buttons">
+						<button class="saveButton">Save</button>
+						<button class="deleteButton">Delete this category</button>
+					</div>
+				</div>
+			</span>
 		</div>
 
-		<div class="buttons">
-			<button id="save">Save</button>
+		<div class="footer">
+			<div>Created by Brandon Nicholls</div>
+			<a href="https://github.com/iambrandonn/FlashCards">Github Project</a>
+			<a href="http://tripleequals.blogspot.com/2012/09/webcam-swiper.html">Blo!!!!!!!!g Post</a>
+			<a href="https://twitter.com/NichollsBrandon">@NichollsBrandon</a>
 		</div>
 
 		<script src="handlebars-runtime.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script src="question.js"></script>
+		<script src="categories.js"></script>
+		<script src="common.js"></script>
 		<script src="addEdit.js"></script>
 	</body>
 </html>

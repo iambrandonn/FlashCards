@@ -1,45 +1,61 @@
-function getListNameFromQueryString() {
-	return decodeURI(document.location.search).replace('?list=', '');
+function getNumQuestions() {
+	var count = 0;
+	$('.key').each(function(element) {
+		if ($(this).val().length > 1) {
+			count++;
+		}
+	});
+
+	return count;
 }
 
-var listToEdit = getListNameFromQueryString();
-if (listToEdit.length > 0) {
-	$('.problemSet').val(listToEdit);
-	var loadedList = localStorage.getItem(listToEdit);
-	if (loadedList) {
-		var loadedListAsObject = JSON.parse(loadedList);
-		var nodesToAdd = Handlebars.templates['question.html'](loadedListAsObject);
-		$('.header').after(nodesToAdd);
+$('.saveButton').click(function() {
+	if (getNumQuestions() < 2) {
+		alert('You must provide at least two questions.');
+		return;
 	}
-}
+	var categoryName = $('.categoryName').val();
+	localStorage.setItem(categoryName, serializeQuestions());
 
-$('#save').click(function() {
-	var problemSetName = $('.problemSet').val();
-	localStorage.setItem(problemSetName, serializeQuestions());
-	var problemSetList = localStorage.getItem('problemSets');
-	if (problemSetList) {
-		problemSetList = JSON.parse(problemSetList);
+	var categoryList = localStorage.getItem('categories');
+	if (categoryList) {
+		categoryList = JSON.parse(categoryList);
 	}
 	else {
-		problemSetList = [];
+		categoryList = [];
 	}
 
 	// See if this list already existed
-	var alreadyExists = problemSetList.some(function(list) {
-		return list === problemSetName;
+	var alreadyExists = categoryList.some(function(list) {
+		return list === categoryName;
 	});
 
 	// Only add it if it didn't exist
 	if (!alreadyExists) {
-		problemSetList.push(problemSetName);
-		problemSetList = JSON.stringify(problemSetList);
-		localStorage.setItem('problemSets', problemSetList);
+		categoryList.push(categoryName);
+		localStorage.setItem('categories', JSON.stringify(categoryList));
 	}
 
 	document.location = 'index.html';
 });
 
-$('.key, .value').focus(checkForNewRowNeeded);
+$('.deleteButton').click(function() {
+	var categoryName = $('.categoryName').val();
+	localStorage.removeItem(categoryName);
+
+	var categoryList = localStorage.getItem('categories');
+	if (categoryList) {
+		categoryList = JSON.parse(categoryList);
+
+		categoryList = categoryList.filter(function(theName) {
+			return theName !== categoryName;
+		});
+
+		localStorage.setItem('categories', JSON.stringify(categoryList));
+	}
+
+	document.location = 'addEditList.html';
+});
 
 function checkForNewRowNeeded() {
 	// is there an empty row still?
@@ -72,3 +88,30 @@ function serializeQuestions() {
 
 	return JSON.stringify(questionSet);
 }
+
+function getListNameFromQueryString() {
+	return decodeURI(document.location.search).replace('?category=', '');
+}
+
+function categoryClickedCallback() {
+	document.location = 'addEditList.html?category=' + this.innerHTML;
+}
+
+var excludeBuiltinCategories = true;
+common.renderCategories(excludeBuiltinCategories, categoryClickedCallback);
+
+var listToEdit = getListNameFromQueryString();
+if (listToEdit.length > 0) {
+	$('.categoryName').val(listToEdit);
+	var loadedList = localStorage.getItem(listToEdit);
+	if (loadedList) {
+		var loadedListAsObject = JSON.parse(loadedList);
+		var nodesToAdd = Handlebars.templates['question.html'](loadedListAsObject);
+		$('.header').after(nodesToAdd);
+	}
+}
+else {
+	$('.newLink').hide();
+}
+
+$('.key, .value').focus(checkForNewRowNeeded);

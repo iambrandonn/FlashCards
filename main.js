@@ -1,6 +1,10 @@
-/*global console, Handlebars */
-var currentTime = 60;
-var timer;
+/*global console, Handlebars, common, samples */
+var SpeechRecognition = window.mozSpeechRecognition ||
+	window.msSpeechRecognition ||
+	window.oSpeechRecognition ||
+	window.webkitSpeechRecognition ||
+	window.SpeechRecognition;
+
 var currentProblem;
 var currentScore = 0;
 var highScore = 0;
@@ -8,209 +12,13 @@ var timerCtx = document.getElementById('cnvTimer').getContext('2d');
 var timerCanvasHeight = document.getElementById('cnvTimer').height;
 var beginTime;
 var errorOccurred = false;
-var selectedProblemSet = 'builtin-addition';
-
-var capitals = [
-	{key:'Alabama', value: 'Montgomery'},
-	{key:'Alaska', value: 'Juneau'},
-	{key:'Arizona', value: 'Phoenix'},
-	{key:'Arkansas', value: 'Little Rock'},
-	{key:'California', value: 'Sacramento'},
-	{key:'Colorado', value: 'Denver'},
-	{key:'Connecticut', value: 'Hartford'},
-	{key:'Delaware', value: 'Dover'},
-	{key:'Florida', value: 'Tallahassee'},
-	{key:'Georgia', value: 'Atlanta'},
-	{key:'Hawaii', value: 'Honolulu'},
-	{key:'Idaho', value: 'Boise'},
-	{key:'Illinois', value: 'Springfield'},
-	{key:'Indiana', value: 'Indianapolis'},
-	{key:'Iowa', value: 'Des Moines'},
-	{key:'Kansas', value: 'Topeka'},
-	{key:'Kentucky', value: 'Frankfort'},
-	{key:'Louisiana', value: 'Baton Rouge'},
-	{key:'Maine', value: 'Augusta'},
-	{key:'Maryland', value: 'Annapolis'},
-	{key:'Massachusetts', value: 'Boston'},
-	{key:'Michigan', value: 'Lansing'},
-	{key:'Minnesota', value: 'Saint Paul'},
-	{key:'Mississippi', value: 'Jackson'},
-	{key:'Missouri', value: 'Jefferson City'},
-	{key:'Montana', value: 'Helena'},
-	{key:'Nebraska', value: 'Lincoln'},
-	{key:'Nevada', value: 'Carson City'},
-	{key:'New Hampshire', value: 'Concord'},
-	{key:'New Jersey', value:'Trenton'},
-	{key:'New Mexico', value: 'Santa Fe'},
-	{key:'New York', value: 'Albany'},
-	{key:'North Carolina', value: 'Raleigh'},
-	{key:'North Dakota', value: 'Bismarck'},
-	{key:'Ohio', value: 'Columbus'},
-	{key:'Oklahoma', value: 'Oklahoma City'},
-	{key:'Oregon', value: 'Salem'},
-	{key:'Pennsylvania', value: 'Harrisburg'},
-	{key:'Rhode Island', value: 'Providence'},
-	{key:'South Carolina', value: 'Columbia'},
-	{key:'South Dakota', value:	'Pierre'},
-	{key:'Tennessee', value: 'Nashville'},
-	{key:'Texas', value: 'Austin'},
-	{key:'Utah', value: 'Salt Lake City'},
-	{key:'Vermont', value: 'Montpelier'},
-	{key:'Virginia', value: 'Richmond'},
-	{key:'Washington', value: 'Olympia'},
-	{key:'West Virginia', value: 'Charleston'},
-	{key:'Wisconsin', value: 'Madison'},
-	{key:'Wyoming', value: 'Cheyenne'}
-];
-
-var chemSymbols = [
-	{key:'Ac', value: 'Actinium'},
-	{key:'Ag', value: 'Silver'},
-	{key:'Al', value: 'Aluminium'},
-	{key:'Am', value: 'Americium'},
-	{key:'Ar', value: 'Argon'},
-	{key:'As', value: 'Arsenic'},
-	{key:'At', value: 'Astatine'},
-	{key:'Au', value: 'Gold'},
-	{key:'B', value: 'Boron'},
-	{key:'Ba', value: 'Barium'},
-	{key:'Be', value: 'Beryllium'},
-	{key:'Bh', value: 'Bohrium'},
-	{key:'Bi', value: 'Bismuth'},
-	{key:'Bk', value: 'Berkelium'},
-	{key:'Br', value: 'Bromine'},
-	{key:'C', value: 'Carbon'},
-	{key:'Ca', value: 'Calcium'},
-	{key:'Cd', value: 'Cadmium'},
-	{key:'Ce', value: 'Cerium'},
-	{key:'Cf', value: 'Californium'},
-	{key:'Cl', value: 'Chlorine'},
-	{key:'Cm', value: 'Curium'},
-	{key:'Cn', value: 'Copernicium'},
-	{key:'Co', value: 'Cobalt'},
-	{key:'Cr', value: 'Chromium'},
-	{key:'Cs', value: 'Caesium'},
-	{key:'Cu', value: 'Copper'},
-	{key:'Db', value: 'Dubnium'},
-	{key:'Ds', value: 'Darmstadtium'},
-	{key:'Dy', value: 'Dysprosium'},
-	{key:'Er', value: 'Erbium'},
-	{key:'Es', value: 'Einsteinium'},
-	{key:'Eu', value: 'Europium'},
-	{key:'F', value: 'Fluorine'},
-	{key:'Fe', value: 'Iron'},
-	{key:'Fl', value: 'Flerovium'},
-	{key:'Fm', value: 'Fermium'},
-	{key:'Fr', value: 'Francium'},
-	{key:'Ga', value: 'Gallium'},
-	{key:'Gd', value: 'Gadolinium'},
-	{key:'Ge', value: 'Germanium'},
-	{key:'H', value: 'Hydrogen'},
-	{key:'He', value: 'Helium'},
-	{key:'Hf', value: 'Hafnium'},
-	{key:'Hg', value: 'Mercury'},
-	{key:'Ho', value: 'Holmium'},
-	{key:'Hs', value: 'Hassium'},
-	{key:'I', value: 'Iodine'},
-	{key:'In', value: 'Indium'},
-	{key:'Ir', value: 'Iridium'},
-	{key:'K', value: 'Potassium'},
-	{key:'Kr', value: 'Krypton'},
-	{key:'La', value: 'Lanthanum'},
-	{key:'Li', value: 'Lithium'},
-	{key:'Lr', value: 'Lawrencium'},
-	{key:'Lu', value: 'Lutetium'},
-	{key:'Lv', value: 'Livermorium'},
-	{key:'Md', value: 'Mendelevium'},
-	{key:'Mg', value: 'Magnesium'},
-	{key:'Mn', value: 'Manganese'},
-	{key:'Mo', value: 'Molybdenum'},
-	{key:'Mt', value: 'Meitnerium'},
-	{key:'N', value: 'Nitrogen'},
-	{key:'Na', value: 'Sodium'},
-	{key:'Nb', value: 'Niobium'},
-	{key:'Nd', value: 'Neodymium'},
-	{key:'Ne', value: 'Neon'},
-	{key:'Ni', value: 'Nickel'},
-	{key:'No', value: 'Nobelium'},
-	{key:'Np', value: 'Neptunium'},
-	{key:'O', value: 'Oxygen'},
-	{key:'Os', value: 'Osmium'},
-	{key:'P', value: 'Phosphorus'},
-	{key:'Pa', value: 'Protactinium'},
-	{key:'Pb', value: 'Lead'},
-	{key:'Pd', value: 'Palladium'},
-	{key:'Pm', value: 'Promethium'},
-	{key:'Po', value: 'Polonium'},
-	{key:'Pr', value: 'Praseodymium'},
-	{key:'Pt', value: 'Platinum'},
-	{key:'Pu', value: 'Plutonium'},
-	{key:'Ra', value: 'Radium'},
-	{key:'Rb', value: 'Rubidium'},
-	{key:'Re', value: 'Rhenium'},
-	{key:'Rf', value: 'Rutherfordium'},
-	{key:'Rg', value: 'Roentgenium'},
-	{key:'Rh', value: 'Rhodium'},
-	{key:'Rn', value: 'Radon'},
-	{key:'Ru', value: 'Ruthenium'},
-	{key:'S', value: 'Sulfur'},
-	{key:'Sb', value: 'Antimony'},
-	{key:'Sc', value: 'Scandium'},
-	{key:'Se', value: 'Selenium'},
-	{key:'Sg', value: 'Seaborgium'},
-	{key:'Si', value: 'Silicon'},
-	{key:'Sm', value: 'Samarium'},
-	{key:'Sn', value: 'Tin'},
-	{key:'Sr', value: 'Strontium'},
-	{key:'Ta', value: 'Tantalum'},
-	{key:'Tb', value: 'Terbium'},
-	{key:'Tc', value: 'Technetium'},
-	{key:'Te', value: 'Tellurium'},
-	{key:'Th', value: 'Thorium'},
-	{key:'Ti', value: 'Titanium'},
-	{key:'Tl', value: 'Thallium'},
-	{key:'Tm', value: 'Thulium'},
-	{key:'U', value: 'Uranium'},
-	{key:'Uuo', value: 'Ununoctium'},
-	{key:'Uup', value: 'Ununpentium'},
-	{key:'Uus', value: 'Ununseptium'},
-	{key:'Uut', value: 'Ununtrium'},
-	{key:'V', value: 'Vanadium'},
-	{key:'W', value: 'Tungsten'},
-	{key:'Xe', value: 'Xenon'},
-	{key:'Y', value: 'Yttrium'},
-	{key:'Yb', value: 'Ytterbium'},
-	{key:'Zn', value: 'Zinc'},
-	{key:'Zr', value: 'Zirconium'}
-];
-
-var spanishWords = [
-	{key:'escuela', value:'school'},
-	{key:'manzana', value:'apple'},
-	{key:'mesa', value:'table'},
-	{key:'verde', value:'green'},
-	{key:'nariz', value:'nose'},
-	{key:'ciencia', value:'science'},
-	{key:'biblioteca', value:'library'},
-	{key:'médico', value:'doctor'},
-	{key:'queso', value:'cheese'},
-	{key:'puerta', value:'door'},
-	{key:'coche', value:'car'},
-	{key:'árbol', value:'tree'},
-	{key:'playa', value:'beach'},
-	{key:'brazo', value:'arm'},
-	{key:'perro', value:'dog'},
-	{key:'maestro', value:'teacher'}
-];
+var selectedCategory = 'builtin-addition';
+var problemsForSelectedCategory;
 
 function getQuestionFromList(theList) {
 	var index = getRandomInteger(theList.length) - 1;
+	console.log(index);
 	return theList[index];
-}
-
-function generateCustomQuestion() {
-	var problems = JSON.parse(localStorage.getItem(selectedProblemSet));
-	return getQuestionFromList(problems);
 }
 
 function generateAdditionProblem() {
@@ -261,7 +69,7 @@ function getRandomInteger(ceiling) {
 
 function showNextProblem() {
 	var problemText;
-	switch (selectedProblemSet) {
+	switch (selectedCategory) {
 		case 'builtin-addition':
 			currentProblem = generateAdditionProblem();
 			problemText = currentProblem.firstNumber + ' + ' + currentProblem.secondNumber;
@@ -279,19 +87,19 @@ function showNextProblem() {
 			problemText = currentProblem.firstNumber + ' / ' + currentProblem.secondNumber;
 			break;
 		case 'builtin-capitals':
-			currentProblem = getQuestionFromList(capitals);
+			currentProblem = getQuestionFromList(samples.capitals);
 			problemText = currentProblem.key;
 			break;
 		case 'builtin-chemSymbols':
-			currentProblem = getQuestionFromList(chemSymbols);
+			currentProblem = getQuestionFromList(samples.chemSymbols);
 			problemText = currentProblem.key;
 			break;
 		case 'builtin-spanish':
-			currentProblem = getQuestionFromList(spanishWords);
+			currentProblem = getQuestionFromList(samples.spanishWords);
 			problemText = currentProblem.key;
 			break;
 		default:
-			currentProblem = generateCustomQuestion();
+			currentProblem = getQuestionFromList(window.problemsForSelectedCategory);
 			problemText = currentProblem.key;
 			break;
 	}
@@ -299,7 +107,9 @@ function showNextProblem() {
 }
 
 function startSpeechRecognition() {
-	var speech = new webkitSpeechRecognition();
+	var currentTime = 60;
+	var timer;
+	var speech = new SpeechRecognition();
 	speech.continuous = true;
 	speech.interimResults = true;
 	speech.onstart = function() {
@@ -345,10 +155,10 @@ function startSpeechRecognition() {
 		errorOccurred = true;
 		startButton.textContent = 'Restart';
 
-		var previousHigh = getHighScoreFor(selectedProblemSet);
+		var previousHigh = common.getHighScoreFor(selectedCategory);
 		if (previousHigh < currentScore) {
-			setHighScoreFor(selectedProblemSet, currentScore);
-			renderProblemSets();
+			common.setHighScoreFor(selectedCategory, currentScore);
+			common.renderCategories();
 			document.getElementById('highScoreValue').innerHTML = currentScore;
 		}
 
@@ -434,118 +244,30 @@ function updateTimer() {
 	}
 }
 
-function getHighScoreFor(problemSet) {
-	if (localStorage) {
-		var score = localStorage.getItem(problemSet + 'HighScore');
-		if (score > 0) {
-			return score;
-		}
-		else {
-			return 0;
-		}
+function detectIfSpeechSupported() {
+	var supportMessage;
+	var warningsElement = document.getElementsByClassName('warnings')[0];
+	if (SpeechRecognition) {
+		supportMessage = "Cool!  Your browser supports speech recognition.  Have fun!";
 	}
-
-	return 0;
+	else {
+		warningsElement.classList.add('unsupported');
+		supportMessage = "Sorry... Your browser doesn't support speech recognition yet.  Try Google Chrome version 25.";
+	}
+	warningsElement.innerHTML = supportMessage;
 }
 
-function setHighScoreFor(problemSet, score) {
-	if (localStorage) {
-		localStorage.setItem(problemSet + 'HighScore', score);
-	}
-}
-
-function renderProblemSets() {
-	var problemSets = [
-		{
-			name: 'builtin-addition',
-			displayName: 'Addition',
-			highScore: getHighScoreFor('builtin-addition'),
-			checked: selectedProblemSet === 'builtin-addition'
-		},
-		{
-			name: 'builtin-subtraction',
-			displayName: 'Subtraction',
-			highScore: getHighScoreFor('builtin-subtraction'),
-			checked: selectedProblemSet === 'builtin-subtraction'
-		},
-		{
-			name: 'builtin-multiplication',
-			displayName: 'Multiplication',
-			highScore: getHighScoreFor('builtin-multiplication'),
-			checked: selectedProblemSet === 'builtin-multiplication'
-		},
-		{
-			name: 'builtin-division',
-			displayName: 'Division',
-			highScore: getHighScoreFor('builtin-division'),
-			checked: selectedProblemSet === 'builtin-division'
-		},
-		{
-			name: 'builtin-capitals',
-			displayName: 'US State Capitals',
-			highScore: getHighScoreFor('builtin-capitals'),
-			checked: selectedProblemSet === 'builtin-capitals'
-		},
-		{
-			name: 'builtin-chemSymbols',
-			displayName: 'Chemical Symbols',
-			highScore: getHighScoreFor('builtin-chemSymbols'),
-			checked: selectedProblemSet === 'builtin-chemSymbols'
-		},
-		{
-			name: 'builtin-spanish',
-			displayName: 'Spanish Vocabulary',
-			highScore: getHighScoreFor('builtin-spanish'),
-			checked: selectedProblemSet === 'builtin-spanish'
-		}
-	];
-
-	addCustomProblemSets(problemSets);
-	var problemSetsHtml = Handlebars.templates['problemSets.html']({
-		problemSets: problemSets
-	});
-
-	document.getElementsByClassName('problemSetList')[0].innerHTML = problemSetsHtml;
-
-	var problemSetElements = document.getElementsByClassName('problemSet');
-	for (var i = 0; i < problemSetElements.length; i++) {
-		problemSetElements[i].addEventListener('click', problemSetChanged);
-	}
-}
-
-function addCustomProblemSets(arrayToAddTo) {
-	var problemsAsString = localStorage.getItem('problemSets');
-	if (problemsAsString) {
-		var problemSetArray = JSON.parse(problemsAsString);
-		problemSetArray.forEach(function(problemSetName) {
-			arrayToAddTo.push({
-				name: problemSetName,
-				displayName: problemSetName,
-				highScore: getHighScoreFor(problemSetName),
-				checked: selectedProblemSet === problemSetName
-			});
-		});
-	}
-}
-
-function problemSetChanged() {
-	var previouslySelected = document.getElementsByClassName('selected');
-	for (var i = 0; i < previouslySelected.length; i++) {
-		previouslySelected[i].classList.remove('selected');
-	}
-	this.classList.add('selected');
-
-	selectedProblemSet = this.attributes['name'].value;
-
-	highScore = getHighScoreFor(selectedProblemSet);
-	document.getElementById('highScoreValue').innerHTML = highScore;
-}
-
-renderProblemSets();
+detectIfSpeechSupported();
+common.renderCategories();
 paintTimer(0.99999);
 
 var startButton = document.getElementsByClassName('startButton')[0];
 startButton.addEventListener('click', function() {
+	if (this.classList.contains('disabled')) {
+		window.alert('Please choose a category');
+		return ;
+	}
+
 	startSpeechRecognition();
 
 	document.getElementsByClassName('scores')[0].classList.remove('hidden');

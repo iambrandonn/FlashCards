@@ -1,51 +1,6 @@
-body {
-	color: rgb(0, 44, 46);
-	margin: 0;
-	font-family: Arial, Arial, Helvetica, sans-serif;
-	background-color: rgb(227, 235, 238);
-}
-
-div, span {
-	box-sizing: border-box;
-}
-
-a {
-	text-decoration: none;
-	color: rgb(0, 99, 179);
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
-.hidden {
-	display: none;
-}
-
-.content {
-    width: 100%;
-    white-space: nowrap;
-    display: table;
-}
-
-.component {
-	vertical-align: top;
-	padding: 13px;
-	background-color: white;
-	margin: 10px;
-	border: 1px solid rgb(53, 95, 109);
-}
-
-.navigation, .problemArea {
+.problemArea {
 	vertical-align: top;
 	display: table-cell;
-}
-
-.navigation {
-	width: 290px;
-	white-space: normal;
-}
-.problemArea {
 	font-weight: bold;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 130px;
@@ -115,36 +70,6 @@ a:hover {
 	border: 1px solid rgb(53, 95, 109);
 }
 
-.warnings {
-	border-bottom: 3px solid rgb(134, 150, 155);
-	border-top: 2px solid rgb(38, 126, 155);
-	width: 100%;
-	text-align: center;
-	font-family: Arial, Arial, Helvetica, sans-serif;
-	color: rgb(226, 226, 226);
-	background-color: rgb(0, 37, 49);
-	padding: 10px;
-	font-size: 17px;
-}
-
-.footer {
-	text-align: center;
-	font-size: 15px;
-	font-family: Arial, Arial, Helvetica, sans-serif;
-	font-weight: normal;
-	width: 100%;
-	margin-top: 25px;
-}
-
-.footer > a {
-	padding-left: 8px;
-	padding-right: 8px;
-}
-
-.footer > div {
-	padding-bottom: 7px;
-}
-
 .controls {
 	text-align: center;
 	margin-top: 30px;
@@ -161,25 +86,11 @@ a:hover {
 	background: rgb(0, 99, 136);
 }
 
-.problemSetList {
-	list-style-type: none;
-	padding: 13px 13px 13px 7px;
-	margin-top: 4px;
-}
-
-.problemSet {
-	padding: 7px 10px 7px 10px;
-}
-
-.problemSet:hover {
-	background-color: rgb(221, 221, 221);
-	cursor: pointer;
-	outline: 1px solid rgb(115, 126, 129);
-}
-
-.selected {
-	font-weight: bold;
-	color: black;
+.disabled {
+	background-color: #C2C2C2;
+	border: 2px solid #A0A0A0;
+	text-shadow: 1px 1px 1px gray;
+	cursor: initial;
 }
 
 .scores {

@@ -1,6 +1,12 @@
-.problemSet {
-	width: 250px;
+.nameSection {
+	margin: 13px 0 22px 5px;
+}
+
+.categoryName {
+	width: 300px;
 	padding: 4px;
+	font-weight: bold;
+	font-size: 20px;
 }
 
 .questions {
@@ -13,6 +19,10 @@
 	text-align: center;
 }
 
+.columnHeading {
+	font-weight: bold;
+}
+
 .key, .value, .columnHeading {
 	display: inline-block;
 	width: 48%;
@@ -23,10 +33,39 @@
 	padding: 4px;
 }
 
-#save {
-
+.buttons {
+	margin: 10px 4px 10px 3px;
 }
 
-.buttons {
-	width: 500px;
+.deleteButton {
+	border: 2px solid #290000;
+	border-radius: 6px;
+	font-size: 20px;
+	padding: 4px;
+	cursor: pointer;
+	color: white;
+	text-shadow: 1px 2px 1px #460000;
+	background: #EB0000;
+	margin-left: 30px;
+}
+
+.saveButton {
+	border: 2px solid #002908;
+	border-radius: 6px;
+	font-size: 20px;
+	padding: 4px;
+	cursor: pointer;
+	color: white;
+	text-shadow: 1px 2px 1px #00461F;
+	background: #009743;
+}
+
+.newLink {
+	display: block;
+	margin: 0 0 7px 15px;
+}
+
+.backLink {
+	display: block;
+	margin: 10px 0 5px 15px;
 }
