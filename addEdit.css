@@ -47,6 +47,7 @@
 	text-shadow: 1px 2px 1px #460000;
 	background: #EB0000;
 	margin-left: 30px;
+	display: none;
 }
 
 .saveButton {

@@ -1,4 +1,4 @@
-/*global console, Handlebars, common, samples */
+/*global Handlebars, common, samples */
 var SpeechRecognition = window.mozSpeechRecognition ||
 	window.msSpeechRecognition ||
 	window.oSpeechRecognition ||
@@ -17,7 +17,6 @@ var problemsForSelectedCategory;
 
 function getQuestionFromList(theList) {
 	var index = getRandomInteger(theList.length) - 1;
-	console.log(index);
 	return theList[index];
 }
 
@@ -69,39 +68,42 @@ function getRandomInteger(ceiling) {
 
 function showNextProblem() {
 	var problemText;
-	switch (selectedCategory) {
-		case 'builtin-addition':
-			currentProblem = generateAdditionProblem();
-			problemText = currentProblem.firstNumber + ' + ' + currentProblem.secondNumber;
-			break;
-		case 'builtin-subtraction':
-			currentProblem = generateSubtractionProblem();
-			problemText = currentProblem.firstNumber + ' - ' + currentProblem.secondNumber;
-			break;
-		case 'builtin-multiplication':
-			currentProblem = generateMultiplicationProblem();
-			problemText = currentProblem.firstNumber + ' x ' + currentProblem.secondNumber;
-			break;
-		case 'builtin-division':
-			currentProblem = generateDivisionProblem();
-			problemText = currentProblem.firstNumber + ' / ' + currentProblem.secondNumber;
-			break;
-		case 'builtin-capitals':
-			currentProblem = getQuestionFromList(samples.capitals);
-			problemText = currentProblem.key;
-			break;
-		case 'builtin-chemSymbols':
-			currentProblem = getQuestionFromList(samples.chemSymbols);
-			problemText = currentProblem.key;
-			break;
-		case 'builtin-spanish':
-			currentProblem = getQuestionFromList(samples.spanishWords);
-			problemText = currentProblem.key;
-			break;
-		default:
-			currentProblem = getQuestionFromList(window.problemsForSelectedCategory);
-			problemText = currentProblem.key;
-			break;
+	var previousProblem = currentProblem;
+	while (previousProblem === currentProblem) {
+		switch (selectedCategory) {
+			case 'builtin-addition':
+				currentProblem = generateAdditionProblem();
+				problemText = currentProblem.firstNumber + ' + ' + currentProblem.secondNumber;
+				break;
+			case 'builtin-subtraction':
+				currentProblem = generateSubtractionProblem();
+				problemText = currentProblem.firstNumber + ' - ' + currentProblem.secondNumber;
+				break;
+			case 'builtin-multiplication':
+				currentProblem = generateMultiplicationProblem();
+				problemText = currentProblem.firstNumber + ' x ' + currentProblem.secondNumber;
+				break;
+			case 'builtin-division':
+				currentProblem = generateDivisionProblem();
+				problemText = currentProblem.firstNumber + ' / ' + currentProblem.secondNumber;
+				break;
+			case 'builtin-capitals':
+				currentProblem = getQuestionFromList(samples.capitals);
+				problemText = currentProblem.key;
+				break;
+			case 'builtin-chemSymbols':
+				currentProblem = getQuestionFromList(samples.chemSymbols);
+				problemText = currentProblem.key;
+				break;
+			case 'builtin-spanish':
+				currentProblem = getQuestionFromList(samples.spanishWords);
+				problemText = currentProblem.key;
+				break;
+			default:
+				currentProblem = getQuestionFromList(window.problemsForSelectedCategory);
+				problemText = currentProblem.key;
+				break;
+		}
 	}
 	document.getElementsByClassName('problem')[0].textContent = problemText;
 }

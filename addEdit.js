@@ -102,6 +102,7 @@ common.renderCategories(excludeBuiltinCategories, categoryClickedCallback);
 
 var listToEdit = getListNameFromQueryString();
 if (listToEdit.length > 0) {
+	$('.deleteButton').show();
 	$('.categoryName').val(listToEdit);
 	var loadedList = localStorage.getItem(listToEdit);
 	if (loadedList) {
