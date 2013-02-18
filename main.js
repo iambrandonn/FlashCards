@@ -115,6 +115,11 @@ function startSpeechRecognition() {
 	speech.continuous = true;
 	speech.interimResults = true;
 	speech.onstart = function() {
+		document.getElementsByClassName('scores')[0].classList.remove('hidden');
+		document.getElementsByClassName('card')[0].classList.remove('hidden');
+		document.getElementsByClassName('iHeard')[0].classList.remove('hidden');
+		document.getElementById('secondInstructions').style.display = '';
+
 		errorOccurred = false;
 		currentScore = 0;
 		document.getElementById('currentScoreValue').textContent = currentScore;
@@ -259,9 +264,25 @@ function detectIfSpeechSupported() {
 	warningsElement.innerHTML = supportMessage;
 }
 
+function switchToSecondInstructions() {
+	var first = document.getElementById('firstInstructions');
+	if (first.style.display !== 'none') {
+		document.getElementById('secondInstructions').style.display = 'block';
+		first.style.display = 'none';
+	}
+}
+
 detectIfSpeechSupported();
 common.renderCategories();
 paintTimer(0.99999);
+
+setTimeout(function() {
+	document.getElementsByClassName('leftArrow')[0].style['margin-left'] ='0';
+	setTimeout(function() {
+		document.getElementsByClassName('leftArrow')[0].style['opacity'] ='0';
+		document.getElementById('categoryComponent').style['box-shadow'] ='0 0 0 rgb(0, 115, 121)';
+	}, 1500);
+}, 300);
 
 var startButton = document.getElementsByClassName('startButton')[0];
 startButton.addEventListener('click', function() {
@@ -271,12 +292,6 @@ startButton.addEventListener('click', function() {
 	}
 
 	startSpeechRecognition();
-
-	document.getElementsByClassName('scores')[0].classList.remove('hidden');
-	document.getElementsByClassName('card')[0].classList.remove('hidden');
-	document.getElementsByClassName('iHeard')[0].classList.remove('hidden');
-
-	document.getElementsByClassName('instructions')[0].classList.add('hidden');
 });
 
 var doneSound = new Audio('done.mp3');

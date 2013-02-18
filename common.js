@@ -91,6 +91,10 @@ var common = {
 	},
 
 	categoryChanged: function() {
+		if (window.switchToSecondInstructions) {
+			window.switchToSecondInstructions();
+		}
+
 		document.getElementsByClassName('startButton')[0].classList.remove('disabled');
 		var previouslySelected = document.getElementsByClassName('selected');
 		for (var i = 0; i < previouslySelected.length; i++) {
