@@ -148,3 +148,8 @@
 	-moz-transition: all 1.2s;
 	transition: all 1.2s;
 }
+
+.languageSelector {
+	display: block;
+	margin: 18px auto 0 auto;
+}
