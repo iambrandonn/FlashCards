@@ -14,6 +14,30 @@ var beginTime;
 var errorOccurred = false;
 var selectedCategory = 'builtin-addition';
 var problemsForSelectedCategory;
+var selectedLanguage = navigator.language;
+
+function selectLanguage(newValue) {
+	var dropdown = document.getElementsByClassName('languageSelector')[0];
+    for(var i = 0; i < dropdown.options.length; i++) {
+        if(dropdown.options[i].value === newValue) {
+           dropdown.selectedIndex = i;
+           return;
+        }
+    }
+
+    if (newValue.length === 2) {
+		for(i = 0; i < dropdown.options.length; i++) {
+			if(dropdown.options[i].value.substring(0, 2) === newValue) {
+				dropdown.selectedIndex = i;
+				return;
+			}
+		}
+    }
+
+    // Default to US english if not found
+    selectedLanguage = 'en-US';
+    selectLanguage(selectedLanguage);
+}
 
 function getQuestionFromList(theList) {
 	var index = getRandomInteger(theList.length) - 1;
@@ -114,7 +138,13 @@ function startSpeechRecognition() {
 	var speech = new SpeechRecognition();
 	speech.continuous = true;
 	speech.interimResults = true;
+	speech.lang = selectedLanguage;
 	speech.onstart = function() {
+		document.getElementsByClassName('scores')[0].classList.remove('hidden');
+		document.getElementsByClassName('card')[0].classList.remove('hidden');
+		document.getElementsByClassName('iHeard')[0].classList.remove('hidden');
+		document.getElementById('secondInstructions').style.display = '';
+
 		errorOccurred = false;
 		currentScore = 0;
 		document.getElementById('currentScoreValue').textContent = currentScore;
@@ -184,7 +214,6 @@ function startSpeechRecognition() {
 		checkAnswer(iHeard);
 	};
 
-	speech.lang = 'en-US';
 	speech.start();
 }
 
@@ -259,9 +288,26 @@ function detectIfSpeechSupported() {
 	warningsElement.innerHTML = supportMessage;
 }
 
+function switchToSecondInstructions() {
+	var first = document.getElementById('firstInstructions');
+	if (first.style.display !== 'none') {
+		document.getElementById('secondInstructions').style.display = 'block';
+		first.style.display = 'none';
+	}
+}
+
 detectIfSpeechSupported();
 common.renderCategories();
 paintTimer(0.99999);
+selectLanguage(selectedLanguage);
+
+setTimeout(function() {
+	document.getElementsByClassName('leftArrow')[0].style['margin-left'] ='0';
+	setTimeout(function() {
+		document.getElementsByClassName('leftArrow')[0].style['opacity'] ='0';
+		document.getElementById('categoryComponent').style['box-shadow'] ='0 0 0 rgb(0, 115, 121)';
+	}, 1500);
+}, 300);
 
 var startButton = document.getElementsByClassName('startButton')[0];
 startButton.addEventListener('click', function() {
@@ -271,12 +317,11 @@ startButton.addEventListener('click', function() {
 	}
 
 	startSpeechRecognition();
+});
 
-	document.getElementsByClassName('scores')[0].classList.remove('hidden');
-	document.getElementsByClassName('card')[0].classList.remove('hidden');
-	document.getElementsByClassName('iHeard')[0].classList.remove('hidden');
-
-	document.getElementsByClassName('instructions')[0].classList.add('hidden');
+var languageSelector = document.getElementsByClassName('languageSelector')[0];
+languageSelector.addEventListener('change', function() {
+	selectedLanguage = languageSelector.options[languageSelector.selectedIndex].value;
 });
 
 var doneSound = new Audio('done.mp3');

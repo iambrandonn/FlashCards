@@ -1,7 +1,7 @@
 function getNumQuestions() {
 	var count = 0;
 	$('.key').each(function(element) {
-		if ($(this).val().length > 1) {
+		if ($(this).val().length > 0) {
 			count++;
 		}
 	});
@@ -14,7 +14,14 @@ $('.saveButton').click(function() {
 		alert('You must provide at least two questions.');
 		return;
 	}
+
 	var categoryName = $('.categoryName').val();
+	if (categoryName.length === 0) {
+		$('.categoryName').focus();
+		alert('Please provide a category title');
+		return;
+	}
+
 	localStorage.setItem(categoryName, serializeQuestions());
 
 	var categoryList = localStorage.getItem('categories');

@@ -126,3 +126,30 @@
 .addMoreSection {
 	padding-left: 17px;
 }
+
+#categoryComponent {
+	box-shadow: 0 0 12px rgb(0, 115, 121);
+	-webkit-transition: all .7s;
+	-ms-transition: all .7s;
+	-o-transition: all .7s;
+	-moz-transition: all .7s;
+	transition: all .7s;
+}
+
+.leftArrow {
+	width: 100px;
+	height: 100px;
+	display: block;
+	margin: 38px 0 0 55px;
+	opacity: 1;
+	-webkit-transition: all 1.2s;
+	-ms-transition: all 1.2s;
+	-o-transition: all 1.2s;
+	-moz-transition: all 1.2s;
+	transition: all 1.2s;
+}
+
+.languageSelector {
+	display: block;
+	margin: 18px auto 0 auto;
+}
