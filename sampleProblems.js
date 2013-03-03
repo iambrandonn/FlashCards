@@ -189,6 +189,16 @@ var samples = {
 		{key:'playa', value:'beach'},
 		{key:'brazo', value:'arm'},
 		{key:'perro', value:'dog'},
-		{key:'maestro', value:'teacher'}
+		{key:'maestro', value:'teacher'},
+		{key:'ojo', value:'eye'},
+		{key:'ventana', value:'window'},
+		{key:'azul', value:'blue'},
+		{key:'rojo', value:'red'},
+		{key:'gato', value:'cat'},
+		{key:'libro', value:'book'},
+		{key:'amarillo', value:'yellow'},
+		{key:'blanco', value:'white'},
+		{key:'boca', value:'mouth'},
+		{key:'cabeza', value:'head'}
 	]
 };
