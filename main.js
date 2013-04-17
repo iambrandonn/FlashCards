@@ -140,6 +140,11 @@ function startSpeechRecognition() {
 	speech.interimResults = true;
 	speech.lang = selectedLanguage;
 	speech.onstart = function() {
+		// Run for 60 seconds and stop
+		setTimeout(function() {
+			speech.stop();
+		}, 60000);
+
 		document.getElementsByClassName('scores')[0].classList.remove('hidden');
 		document.getElementsByClassName('card')[0].classList.remove('hidden');
 		document.getElementsByClassName('iHeard')[0].classList.remove('hidden');
