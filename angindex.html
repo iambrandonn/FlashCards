@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html ng-app>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Flash Cards</title>
+    <link href="common.css" rel="stylesheet" />
+    <link href="index.css" rel="stylesheet" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+  </head>
+  <body ng-controller="homeCtrl">
+    <div ng-class="warningsClasses">{{warnings}}</div>
+    <div class="content">
+      <span class="navigation">
+        <div id="categoryComponent" class="component">
+          <ul class="categoryList">
+            <li class="category {{if (true) selected; }}" name="{{category.name}}" ng-repeat="category in categories" ng-click="categoryChanged($event)">
+              {{category.displayName}}
+            </li>
+          </ul>
+
+          <div class="addMoreSection">
+            <a href="addEditList.html">Add more...</a>
+          </div>
+        </div>
+        <div class="component">
+          <canvas id="cnvTimer" width="150" height="150"></canvas>
+          <div class="timeRemaining">1:00</div>
+          <select class="languageSelector">
+            <option value="af-ZA">Afrikaans</option>
+            <option value="id-ID">Bahasa Indonesia</option>
+            <option value="ms-MY">Bahasa Melayu</option>
+            <option value="ca-ES">Català</option>
+            <option value="cs-CZ">Čeština</option>
+            <option value="de-DE">Deutsch</option>
+            <option value="en-AU">English - Australia</option>
+            <option value="en-CA">English - Canada</option>
+            <option value="en-IN">English - India</option>
+            <option value="en-NZ">English - New Zealand</option>
+            <option value="en-ZA">English - South Africa</option>
+            <option value="en-GB">English - United Kingdom</option>
+            <option value="en-US">English - United States</option>
+            <option value="es-AR">Español - Argentina</option>
+            <option value="es-BO">Español - Bolivia</option>
+            <option value="es-CL">Español - Chile</option>
+            <option value="es-CO">Español - Colombia</option>
+            <option value="es-CR">Español - Costa Rica</option>
+            <option value="es-EC">Español - Ecuador</option>
+            <option value="es-SV">Español - El Salvador</option>
+            <option value="es-ES">Español - España</option>
+            <option value="es-US">Español - Estados Unidos</option>
+            <option value="es-GT">Español - Guatemala</option>
+            <option value="es-HN">Español - Honduras</option>
+            <option value="es-MX">Español - México</option>
+            <option value="es-NI">Español - Nicaragua</option>
+            <option value="es-PA">Español - Panamá</option>
+            <option value="es-PY">Español - Paraguay</option>
+            <option value="es-PE">Español - Perú</option>
+            <option value="es-PR">Español - Puerto Rico</option>
+            <option value="es-DO">Español - República Dominicana</option>
+            <option value="es-UY">Español - Uruguay</option>
+            <option value="es-VE">Español - Venezuela</option>
+            <option value="eu-ES">Euskara</option>
+            <option value="fr-FR">Français</option>
+            <option value="gl-ES">Galego</option>
+            <option value="hr_HR">Hrvatski</option>
+            <option value="zu-ZA">IsiZulu</option>
+            <option value="is-IS">Íslenska</option>
+            <option value="it-IT">Italiano - Italia</option>
+            <option value="it-CH">Italiano - Svizzera</option>
+            <option value="hu-HU">Magyar</option>
+            <option value="nl-NL">Nederlands</option>
+            <option value="nb-NO">Norsk bokmål</option>
+            <option value="pl-PL">Polski</option>
+            <option value="pt-BR">Português - Brasil</option>
+            <option value="pt-PT">Português - Portugal</option>
+            <option value="ro-RO">Română</option>
+            <option value="sk-SK">Slovenčina</option>
+            <option value="fi-FI">Suomi</option>
+            <option value="sv-SE">Svenska</option>
+            <option value="tr-TR">Türkçe</option>
+            <option value="bg-BG">български</option>
+            <option value="ru-RU">Pусский</option>
+            <option value="sr-RS">Српски</option>
+            <option value="ko-KR">한국어</option>
+            <option value="ja-JP">日本語</option>
+            <option value="la">Lingua latīna</option>
+          </select>
+          <div class="controls">
+            <button title="Please select a category" ng-class="startButtonClasses" ng-click="startClicked()">Start</button>
+          </div>
+
+        </div>
+      </span>
+      <span class="problemArea">
+        <div class="component instructions" id="firstInstructions">
+          Which category would like to see problems for?
+          <img src="arrow.png" class="leftArrow" />
+        </div>
+
+        <div class="component instructions hidden" id="secondInstructions">
+          You will have 60 seconds to get as many correct as you can.  When you click "Start" the browser will ask you for permission to use the microphone.  Once cards start appearing, say the answers out loud.  A new problem won't given until either you say "skip" or get the problem right.
+        </div>
+
+        <div class="component scores hidden">
+          <span class="currentScore">
+            Score: <span id="currentScoreValue"></span>
+          </span>
+          <span class="highScore">
+            High Score: <span id="highScoreValue"></span>
+          </span>
+        </div>
+
+        <div class="card component hidden">
+          <div class="problem"></div>
+        </div>
+        <div class="iHeard component hidden">
+          <span class="iHeardLabel">I think I heard you say:</span> <span id="iHeardText"></span>
+          <div class="skipHint">
+            If you get stuck, say "skip"...
+          </div>
+        </div>
+      </span>
+    </div>
+
+    <div class="footer">
+      <div>Created by Brandon Nicholls</div>
+      <a target="_blank" href="https://github.com/iambrandonn/FlashCards">Github Project</a>
+      <a target="_blank" href="http://tripleequals.blogspot.com/2013/02/the-new-web-speech-api-flash-cards.html">Blog Post</a>
+      <a target="_blank" href="https://twitter.com/NichollsBrandon">@NichollsBrandon</a>
+    </div>
+
+    <script src="angmain.js"></script>
+    <!--script src="handlebars-runtime.js"></script>
+    <script src="categories.js"></script>
+    <script src="common.js"></script>
+    <script src="sampleProblems.js"></script>
+    <script src="main.js"></script-->
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-5078580-4']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>
