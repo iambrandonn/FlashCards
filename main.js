@@ -230,7 +230,7 @@ function checkAnswer(guess) {
 	}
 
 
-	if (trimmedGuess.indexOf('skip') >= 0 || trimmedGuess.indexOf(answer) >= 0) {
+	if (/skip|next question/gi.test(guess) || trimmedGuess.indexOf(answer) >= 0) {
 		showNextProblem();
 	}
 
